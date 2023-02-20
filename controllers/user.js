@@ -1,7 +1,26 @@
 const bcrypt = require("bcrypt"); // Importation du package de cryptage
 const jwt = require("jsonwebtoken"); // Importable du package de webtokens
-
 const User = require("../models/user"); // Importation du modèle pour User
+
+const emailValidator = require("email-validator"); // Importation du package de validation des emails
+const passwordValidator = require("password-validator"); // Importation du package de validation des mots de passe
+
+const passwordSchema = new passwordValidator();
+
+passwordSchema
+  .is()
+  .min(8) // Longueur minimum : 8 caracteres
+  .is()
+  .max(40) // Longueur maximum : 40 caracteres
+  .has()
+  .uppercase() // letters Doit contenur des majuscules
+  .has()
+  .lowercase() // Doit contenir des minuscles
+  .has()
+  .digits() // Doit contenir au moins 1 chiffre
+  .has()
+  .not()
+  .symbols(); // Ne doit pas contenir de symbole
 
 /* Utilisation de la méthode signup */
 exports.signup = (req, res, next) => {

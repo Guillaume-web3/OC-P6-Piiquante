@@ -10,9 +10,8 @@ module.exports = (req, res, next) => {
     req.auth = {
       userId: userId, // Ajout de l'userId à l'objet request, qui sera renvoyé aux routes appelées par la suite
     };
-    console.log("Authentification réussi coté middleware");
+    next();
   } catch (error) {
     res.status(401).json({ error });
-    console.log("Probleme avec l'authentification coté middleware");
   }
 };
