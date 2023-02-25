@@ -1,3 +1,6 @@
+/* Importation des variables d'environnement */
+require("dotenv").config();
+
 /* Utilisation d'Express */
 const express = require("express");
 const app = express();
@@ -13,11 +16,12 @@ const sauceRoutes = require("./roots/sauce");
 const path = require("path");
 
 /* Connection au Cloud de MongoDN avec mongoose*/
+const USER = process.env.DB_USER;
+const PASSWORD = process.env.DB_PASSWORD;
+const DATABASE = process.env.DB_DATABASE;
+const uri = `mongodb+srv://${USER}:${PASSWORD}@${DATABASE}.s0imbcl.mongodb.net/Piiquante`;
 mongoose
-  .connect(
-    "mongodb+srv://GuillaumeWeb3:guillaume@cluster0.s0imbcl.mongodb.net/Piiquante",
-    { useNewUrlParser: true, useUnifiedTopology: true }
-  )
+  .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("Connexion à MongoDB réussie !"))
   .catch((err) => console.log("Connexion à MongoDB échouée !" + err.message));
 
