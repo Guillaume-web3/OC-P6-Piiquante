@@ -9,8 +9,8 @@ const app = express();
 const mongoose = require("mongoose");
 
 /* Importation des routeurs */
-const userRoutes = require("./roots/user");
-const sauceRoutes = require("./roots/sauce");
+const userRoutes = require("./routes/user");
+const sauceRoutes = require("./routes/sauce");
 
 /* Acces au path du serveur */
 const path = require("path");
