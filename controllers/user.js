@@ -9,35 +9,43 @@ const passwordSchema = new passwordValidator();
 
 passwordSchema
   .is()
-  .min(8) // Longueur minimum : 8 caracteres
+  .min(8, "Longueur minimum : 8 caracteres")
   .is()
-  .max(40) // Longueur maximum : 40 caracteres
+  .max(16, "Longueur maximum : 16 caracteres")
   .has()
-  .uppercase() // letters Doit contenur des majuscules
+  .uppercase()
   .has()
-  .lowercase() // Doit contenir des minuscles
+  .lowercase()
   .has()
-  .digits() // Doit contenir au moins 1 chiffre
+  .digits()
   .has()
   .not()
-  .symbols(); // Ne doit pas contenir de symbole
+  .symbols()
+  .has()
+  .not()
+  .spaces();
 
 /* Utilisation de la méthode signup */
 exports.signup = (req, res, next) => {
-  bcrypt
-    .hash(req.body.password, 10) // fonction de hachage (asynchrone) 10 => nombre de tours de hachage. Plus il est haut, plus c'est sécurisé (mais plus c'est long)
-    .then((hash) => {
-      const user = new User({
-        // Création d'un nouvel utilisateur à partir du modèle mangoose
-        email: req.body.email, // Récupération de l'adresse email dans le corp de la requete
-        password: hash, // Récupération du mot de passe crypté
-      });
-      user
-        .save() // Utilisation de la méthode save pour enregistrer dans la base de données
-        .then(() => res.status(201).json({ message: "Utilisateur crée!" }))
-        .catch((error) => res.status(400).json({ error }));
-    })
-    .catch((error) => res.status(500).json({ error }));
+  if (passwordSchema.validate(req.body.password)) {
+    // Validation de la conformité selon le passwordSchema
+    bcrypt
+      .hash(req.body.password, 10) // Fonction de hachage (asynchrone) 10 => nombre de tours de hachage. Plus il est haut, plus c'est sécurisé (mais plus c'est long)
+      .then((hash) => {
+        const user = new User({
+          // Création d'un nouvel utilisateur à partir du modèle mangoose
+          email: req.body.email, // Récupération de l'adresse email dans le corp de la requete
+          password: hash, // Récupération du mot de passe crypté
+        });
+        user
+          .save() // Utilisation de la méthode save pour enregistrer dans la base de données
+          .then(() => res.status(201).json({ message: "Utilisateur crée!" }))
+          .catch((error) => res.status(400).json({ error }));
+      })
+      .catch((error) => res.status(500).json({ error }));
+  } else {
+    res.status(406).json({ message: "Mot de passe non valide" });
+  }
 };
 
 /* Utilisation de la méthode login */
